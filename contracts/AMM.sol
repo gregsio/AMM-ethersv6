@@ -30,10 +30,8 @@ contract AMM {
     );
 
     constructor (Token _token1, Token _token2){
-
         token1 = _token1;
         token2 = _token2;
-
     }
 
     function addLiquidity(uint256 _token1Amount, uint256 _token2Amount) external {
@@ -157,5 +155,42 @@ contract AMM {
                 block.timestamp
             );
     }
+
+
+    function calculateWithdrawalAmount(uint256 _share) 
+        public
+        view
+        returns(uint256 token1Amount, uint256 token2Amount){
+        
+        require(_share <= totalShares, "Must be less than total shares");
+        token1Amount = (_share * token1Balance) / totalShares;
+        token2Amount = (_share * token2Balance) / totalShares;
+    }
+
+    function removeLiquidity(uint256 _share )
+        external
+        returns(uint256 token1Amount, uint256 token2Amount){
+         
+        require(
+            _share <= shares[msg.sender],
+            "Cannot withdraw more shares than you have"
+        );
+        (token1Amount, token2Amount) = calculateWithdrawalAmount(_share);
+        
+        shares[msg.sender] -= _share;
+        totalShares -= _share;
+
+        token1Balance -= token1Amount;
+        token2Balance -= token2Amount;
+
+        K = token1Balance * token2Balance;
+
+        token1.transfer(msg.sender,token1Amount);
+        token2.transfer(msg.sender,token2Amount);
+
+
+        //TODO: emit event
+    }
+
 
 }
