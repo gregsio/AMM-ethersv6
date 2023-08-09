@@ -7,15 +7,25 @@
 const hre = require("hardhat");
 
 async function main() {
-  const NAME = 'Dapp University'
-  const SYMBOL = 'DAPP'
-  const MAX_SUPPLY = '1000000'
+  
+  // Deploy token1
 
-  // Deploy Token
-  let token = await hre.ethers.deployContract('Token', [NAME, SYMBOL, MAX_SUPPLY])
+  let dapp = await hre.ethers.deployContract('Token', ['Dapp Token', 'DAPP', '1000000'])
+  await dapp.waitForDeployment()
+  console.log(`Dapp Token deployed to: ${await dapp.getAddress()}\n`)
 
-  await token.waitForDeployment()
-  console.log(`Token deployed to: ${await token.getAddress()}\n`)
+  // Deploy token2
+
+  let usd = await hre.ethers.deployContract('Token', ['USD Token', 'DAPP', '1000000'])
+  await usd.waitForDeployment()
+  console.log(`USD Token deployed to: ${await usd.getAddress()}\n`)
+
+  // Deploy AMM
+
+  let amm = await hre.ethers.deployContract('AMM', [dapp, usd])
+  await amm.waitForDeployment()
+  console.log(`AMM deployed to: ${await amm.getAddress()}\n`)
+
 }
 
 // We recommend this pattern to be able to use async/await everywhere
