@@ -12,7 +12,7 @@ describe('AMM', () => {
       token2,
       amm
 
-  let accounts, 
+  let accounts,
       deployer,
       liquidityProvider,
       investor1,
@@ -43,10 +43,9 @@ describe('AMM', () => {
     // Send token1 to investor1 & token2 to investor2
     transaction = await token1.connect(deployer).transfer(investor1, tokens(100000))
     await transaction.wait()
-    
+
     transaction = await token2.connect(deployer).transfer(investor2, tokens(100000))
     await transaction.wait()
-
 
     // Deploy AMM
     const AMM = await ethers.getContractFactory('AMM')
@@ -73,7 +72,7 @@ describe('AMM', () => {
   describe('Swapping tokens', () => {
 
     let amount, transaction, result, estimate, balance
-    
+
     it('facilitates swaps', async () => {
       // Deployer  approves 100k tokens
       amount = tokens(100000)
@@ -106,7 +105,7 @@ describe('AMM', () => {
       // LP adds more liquidity
       ///////////////
 
-      // Approves 50k 
+      // Approves 50k
       amount = tokens(50000)
       transaction = await token1.connect(liquidityProvider).approve(amm,amount)
       await transaction.wait()
@@ -125,16 +124,13 @@ describe('AMM', () => {
       // Check AMM now has 150 shares
       expect(await amm.totalShares()).to.equal(tokens(150))
 
-
-
-
       // Investor1 approves all tokens
       transaction = await token1.connect(investor1).approve(amm,amount)
       await transaction.wait()
 
       // Check price before swap
       console.log(`\n\t - Price: ${Number(await amm.token2Balance())/Number(await amm.token1Balance())}`)
-      
+
       // Check investor balance before swap
       balance = await token2.balanceOf(investor1)
       console.log(`\t - Investor1 token2 balance before swap:, ${ethers.formatEther(balance)}`)
@@ -146,7 +142,7 @@ describe('AMM', () => {
       // Investor1 Swaps token1
       transaction = await amm.connect(investor1).swapToken1(tokens(1))
       await transaction.wait()
-      
+
       //Check Swap event
       await expect(transaction).to.emit(amm, 'Swap')
         .withArgs(
@@ -171,10 +167,10 @@ describe('AMM', () => {
 
       //Check price after swap
       console.log(`\t - Price: ${Number(await amm.token2Balance()) / Number(await amm.token1Balance())}\n`)
-     
+
 
       //////////////////////////////////////////////
-      // Investor1 swaps again 
+      // Investor1 swaps again
       ////////////////////////
 
       //Swap more tokens to see what happens
@@ -227,7 +223,7 @@ describe('AMM', () => {
 
       // Check price after swaping large amount
       console.log(`\t - Price: ${Number(await amm.token2Balance()) / Number(await amm.token1Balance())}\n`)
-     
+
 
       //////////////////////////////////////////////////
       // Investor 2 Swaps
@@ -241,7 +237,7 @@ describe('AMM', () => {
       balance = await token1.balanceOf(investor2)
       console.log(`\t - Investor2 token1 balance before swap:, ${ethers.formatEther(balance)}`)
 
-      // Estimates amounts of tokens investor2 will receive after swapping token 2: includes slippage 
+      // Estimates amounts of tokens investor2 will receive after swapping token 2: includes slippage
       estimate = await amm.calculateToken2Swap(tokens(1))
       console.log(`\t - Token 1 amount investor2 will receive after swap: ${ethers.formatEther(estimate)}`)
 
@@ -273,7 +269,7 @@ describe('AMM', () => {
 
       // Check price after swap
       console.log(`\t - Price: ${Number(await amm.token2Balance())/Number(await amm.token1Balance())}\n`)
-        
+
 
       /////////////////////////
       // Removing Liquidity

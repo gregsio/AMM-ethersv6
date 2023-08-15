@@ -4,6 +4,9 @@
 // You can also run a script with `npx hardhat run <script>`. If you do that, Hardhat
 // will compile your contracts, add the Hardhat Runtime Environment's members to the
 // global scope, and execute the script.
+
+//import { ethers } from "hardhat";
+
 const hre = require("hardhat");
 const config = require("../src/config.json")
 
@@ -21,8 +24,8 @@ async function main() {
   console.log(`Fetching accounts & network \n`)
   const accounts = await ethers.getSigners()
   const deployer = accounts[0]
-  const investor1 = accounts[2]
-  const investor2 = accounts[3]
+  const investor1 = accounts[1]
+  const investor2 = accounts[2]
   const investor3 = accounts[3]
   const investor4 = accounts[4]
 

@@ -101,7 +101,7 @@ describe('Token', () => {
         expect(await token.allowance(deployer.address, exchange.address)).to.equal(amount)
       })
 
-      it('emits a Transfer event', async () => {
+      it('emits an Approval event', async () => {
         await expect(transaction).to.emit(token, 'Approval').
           withArgs(deployer.address, exchange.address, amount)
       })
